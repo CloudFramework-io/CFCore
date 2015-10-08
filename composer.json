@@ -1,0 +1,19 @@
+{
+  "name": "cloud-framework/core",
+  "description": "Application Core for Cloud Framework",
+  "minimum-stability": "dev",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Adrián Martínez Maldonado",
+      "email": "am@bloombees.com"
+    },
+    {
+      "name": "Fran López Quesada",
+      "email": "fl@bloombees.com"
+    }
+  ],
+  "require": {
+    "symfony/yaml": "^3.0@dev"
+  }
+}
