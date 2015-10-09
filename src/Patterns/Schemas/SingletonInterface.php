@@ -4,6 +4,6 @@ namespace CloudFramework\Patterns\Schemas;
 interface SingletonInterface
 {
     public function init();
-    public function getInstance();
-    public function create();
+    public static function getInstance();
+    public static function create();
 }
