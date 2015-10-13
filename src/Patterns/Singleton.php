@@ -92,8 +92,10 @@ class Singleton implements SingletonInterface
         if (!$this->isLoaded()) {
             $properties = $this->getClassProperties();
             /** @var \ReflectionProperty $property */
-            if (!empty($properties) && is_array($properties)) foreach ($properties as $property => $class) {
-                $this->load($property, true, $class);
+            if (!empty($properties) && is_array($properties)) {
+                foreach ($properties as $property => $class) {
+                    $this->load($property, true, $class);
+                }
             }
             $this->setLoaded();
         }

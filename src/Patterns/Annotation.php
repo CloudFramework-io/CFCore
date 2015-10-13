@@ -26,9 +26,4 @@ abstract class Annotation implements AnnotationInterface
         return $type;
     }
 
-    public function init()
-    {
-
-    }
-
 }

@@ -72,4 +72,12 @@ Trait SingletonTrait {
         $this->loadTs = round(microtime(true) - $ts, 5);
         return $this;
     }
+
+    /**
+     * Inizialization method
+     */
+    public function init()
+    {
+
+    }
 }

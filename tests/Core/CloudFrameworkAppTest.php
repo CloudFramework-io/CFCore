@@ -1,16 +1,21 @@
 <?php
+namespace CloudFrameworkTest\Core;
 
-use CloudFramework\Core\CloudFrameworkApp;
+use CloudFrameworkTest\Patterns\SingletonTest;
 
-class CloudFrameworkTest extends PHPUnit_Framework_TestCase
+class CloudFrameworkTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \CloudFrameworkTest\Patterns\SingletonTest $singletonTest
+     */
+    private $singletonTest;
+    protected function setup()
+    {
+        $this->singletonTest = SingletonTest::create();
+    }
+
     public function testInstanceCreation()
     {
-        $cf = CloudFrameworkApp::create('test-app');
-
-        $this->assertNotNull($cf, 'Create an instance of CloudFrameworkApp');
-        $this->assertInstanceOf('\CloudFramework\Patterns\Schemas\SingletonInterface', $cf, 'CloudFrameworkApp have to be SingletonInterface');
-        $this->assertInstanceOf('\CloudFramework\Patterns\Singleton', $cf, 'CloudFramework have to extend of Singleton');
-        $this->assertInstanceOf('\CloudFramework\Core\CloudFrameworkApp', $cf, 'Created object must be as creation definition class');
+        $this->singletonTest->checkSingletonInstance();
     }
 }
