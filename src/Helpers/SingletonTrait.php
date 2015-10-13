@@ -26,8 +26,7 @@ Trait SingletonTrait {
         $ts = microtime(true);
         $class = get_called_class();
         if (!array_key_exists($class, self::$instance) || null === self::$instance[$class]) {
-            $instanceClass = self::instanceClass($class, $ts, func_get_args());
-            self::$instance[$class] = $instanceClass;
+            self::$instance[$class] = self::instanceClass($class, $ts, func_get_args());
         }
         return self::$instance[$class];
     }

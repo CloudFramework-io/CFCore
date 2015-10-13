@@ -2,6 +2,7 @@
 namespace CloudFramework\Patterns;
 
 use CloudFramework\Annotations\Autowired;
+use CloudFramework\Helpers\MagicClass;
 use CloudFramework\Helpers\SingletonTrait;
 use CloudFramework\Patterns\Schemas\SingletonInterface;
 
@@ -12,39 +13,19 @@ use CloudFramework\Patterns\Schemas\SingletonInterface;
 class Singleton implements SingletonInterface
 {
     use SingletonTrait;
+    use MagicClass;
     /**
-     * @var bool flag que indica si la clase ha sido instanciada correctamente
+     * @var bool Flag thath indicates that actual class is already loaded
      */
     protected $loaded = false;
 
-    /**
-     * is not allowed to call from outside: private!
-     */
-    private function __construct()
+    public function __construct()
     {
         $this->init();
     }
 
     /**
-     * prevent the instance from being cloned
-     * @return void
-     */
-    private function __clone()
-    {
-    }
-
-    /**
-     * Magic setter
-     * @param $variable
-     * @param $value
-     */
-    public function __set($variable, $value)
-    {
-        $this->$variable = $value;
-    }
-
-    /**
-     * Método que devuelve si una clase está isntanciada correctamente
+     * Returns if class is already loaded
      * @return bool
      */
     public function isLoaded()
@@ -53,7 +34,7 @@ class Singleton implements SingletonInterface
     }
 
     /**
-     * Método que configura como cargada una clase
+     * Set class is loaded or not
      * @param bool $loaded
      */
     public function setLoaded($loaded = true)
@@ -66,7 +47,7 @@ class Singleton implements SingletonInterface
      */
 
     /**
-     * Método que extrae el nombre de la clase
+     * Extract short name from class namespace
      * @return string
      */
     public function getShortName()
@@ -76,7 +57,7 @@ class Singleton implements SingletonInterface
     }
 
     /**
-     * Servicio de inyección de dependencias
+     * Depedency injection service
      * @param string $variable
      * @param bool $singleton
      * @param string $classNameSpace
@@ -155,9 +136,10 @@ class Singleton implements SingletonInterface
     {
         $reflector = new \ReflectionClass($calledClass);
         $property = $reflector->getProperty($variable);
-        $varInstanceType = (null === $classNameSpace) ? $this->extractVarType($property->getDocComment()) : $classNameSpace;
+        $varInstanceType = (null === $classNameSpace) ? Annotation::extractVarType($property->getDocComment()) : $classNameSpace;
         $instance = null;
         if (true === $singleton && (method_exists($varInstanceType, "getInstance") || method_exists($varInstanceType, "create"))) {
+            /** @var \CloudFramework\Patterns\Schemas\SingletonInterface $varInstanceType */
             $instance = $varInstanceType::getInstance();
         } else {
             $instance = new $varInstanceType();

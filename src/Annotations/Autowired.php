@@ -21,8 +21,11 @@ class Autowired extends Annotation
     public $params = [];
 
     /**
-     * Extract parameters and class referenced to annotation
-     * @see \CloudFramework\Patterns\Schemas\AnnotationInterface::parse
+     * Parse properties annotations and extract classes referencies for this
+     * @param string $propertyName
+     * @param string $docComments
+     * @param array $properties
+     * @return array
      */
     public function parse($propertyName, $docComments = '', &$properties = array()) {
         if (preg_match('/@Autowired/im', $docComments)) {

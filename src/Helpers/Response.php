@@ -19,4 +19,9 @@ Trait Response
         exit(0);
     }
 
+    public function debugText($text)
+    {
+        return $this->dumpText("<pre>{$text}</pre>");
+    }
+
 }

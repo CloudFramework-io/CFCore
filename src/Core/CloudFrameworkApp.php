@@ -15,20 +15,18 @@ class CloudFrameworkApp extends CFClass
     private $app_name;
 
     /**
-     * @Autowired(singleton=false)
      * @var \CloudFramework\Core\ConfigLoader $config
      */
     protected $config;
-    protected $configSingleton;
 
-    public function __construct($name = 'CloudFramework')
+    public function __construct($name = 'CloudFramework', $configFile = '')
     {
         $this->app_name = $name;
-        $this->configSingleton = ConfigLoader::getInstance();
+        $this->config = ConfigLoader::getInstance($configFile);
     }
 
     public function run()
     {
-        $this->dumpText("<pre>" . $this->dumpInstance() . "</pre>");
+        $this->debugText(print_r($this, true));
     }
 }

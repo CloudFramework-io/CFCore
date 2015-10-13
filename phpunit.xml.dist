@@ -7,7 +7,7 @@
          bootstrap="vendor/autoload.php"
         >
     <testsuites>
-        <testsuite name="PSFS Test">
+        <testsuite name="Cloud Framework Tests Cases">
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>

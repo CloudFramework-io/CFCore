@@ -17,7 +17,7 @@ abstract class Annotation implements AnnotationInterface
      * @param string $doc
      * @return null|string
      */
-    protected static function extractVarType($doc)
+    public static function extractVarType($doc)
     {
         $type = null;
         if (false !== preg_match('/@var\s+([^\s]+)/', $doc, $matches)) {
