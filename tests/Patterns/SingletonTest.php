@@ -2,6 +2,8 @@
 namespace CloudFrameworkTest\Patterns;
 
 use CloudFramework\Helpers\SingletonTrait;
+use CloudFrameworkTest\Core\CloudFrameworkTest;
+use CloudFrameworkTest\Examples\SimpleClass;
 
 class SingletonTest extends \PHPUnit_Framework_TestCase
 {
@@ -40,5 +42,19 @@ class SingletonTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($instance1);
         $this->assertNotNull($instance2);
         $this->assertEquals($instance1, $instance2);
+    }
+
+    public function testAutowireInyection()
+    {
+        /** @var \CloudFrameworkTest\Examples\InyectTest $testClass */
+        $testClass = $this->testInstanceCreation('CloudFrameworkTest\Examples\InyectTest');
+
+        $this->assertNotNull($testClass->config);
+        $this->assertInstanceOf('\CloudFramework\Core\ConfigLoader', $testClass->config);
+
+        $this->assertNotNull($testClass->testClass);
+        $this->assertInstanceOf('\CloudFrameworkTest\Examples\SimpleClass', $testClass->testClass);
+
+        $test = new SimpleClass();
     }
 }

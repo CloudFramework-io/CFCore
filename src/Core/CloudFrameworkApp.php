@@ -10,7 +10,6 @@ use CloudFramework\Patterns\CFClass;
  */
 class CloudFrameworkApp extends CFClass
 {
-
     use Response;
     private $app_name;
 
@@ -18,6 +17,12 @@ class CloudFrameworkApp extends CFClass
      * @var \CloudFramework\Core\ConfigLoader $config
      */
     protected $config;
+
+    /**
+     * @Autowired
+     * @var \CloudFramework\Core\RequestParser $request
+     */
+    protected $request;
 
     public function __construct($name = 'CloudFramework', $configFile = '')
     {

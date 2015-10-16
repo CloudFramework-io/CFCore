@@ -3,6 +3,7 @@ namespace CloudFramework\Core;
 
 use CloudFramework\Exceptions\LoaderException;
 use CloudFramework\Patterns\CFClass;
+use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -29,7 +30,7 @@ class ConfigLoader extends CFClass
     {
         try {
             return Yaml::parse(file_get_contents($filename));
-        } catch (\ParseException $p) {
+        } catch (ParseException $p) {
             throw $p;
         } catch (\Exception $e) {
             return null;
@@ -50,6 +51,7 @@ class ConfigLoader extends CFClass
      * Save configuration to file
      * @param string $filename
      * @return bool
+     * @throws \CloudFramework\Exceptions\LoaderException
      */
     public function saveConfigFile($filename)
     {
@@ -102,7 +104,6 @@ class ConfigLoader extends CFClass
      * Set a config parameter
      * @param string $key
      * @param mixed $value
-     * @param mixed $config
      * @return \CloudFramework\Core\ConfigLoader
      */
     public function setConfigParam($key, $value = null)
@@ -114,8 +115,8 @@ class ConfigLoader extends CFClass
     /**
      * Recursive process that set a config value
      * @param string $key
-     * @param null $value
-     * @param null $config
+     * @param mixed $value
+     * @param mixed $config
      * @return array
      */
     private function setConfigValue($key, $value = null, $config = null)
@@ -126,12 +127,12 @@ class ConfigLoader extends CFClass
         }
         $keyCount = count($keys);
         $aux = $config;
-        foreach($keys as $_key) {
+        foreach ($keys as $_key) {
             $keyCount--;
-            if(!array_key_exists($_key, $aux)) {
+            if (!array_key_exists($_key, $aux)) {
                 $aux[$_key] = array();
             }
-            if($keyCount > 0) {
+            if ($keyCount > 0) {
                 $aux[$_key]  = $this->setConfigValue($this->getChildConfigKey($key), $value, $aux[$_key]);
             } else {
                 $aux[$_key] = $value;

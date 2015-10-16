@@ -11,7 +11,6 @@ abstract class Annotation implements AnnotationInterface
 {
     use SingletonTrait;
 
-
     /**
      * Extract class namespace in doc comments of class properties
      * @param string $doc

@@ -21,7 +21,6 @@ class Singleton implements SingletonInterface
 
     public function __construct()
     {
-        $this->init();
     }
 
     /**

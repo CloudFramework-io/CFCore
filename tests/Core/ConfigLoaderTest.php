@@ -32,14 +32,14 @@ class ConfigLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($parsedConfigKO);
 
         //Parse config file and test if a key exists
-        $parsedConfigOK = ConfigLoader::parseYamlConfigFile(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'configtest.yml');
+        $parsedConfigOK = ConfigLoader::parseYamlConfigFile(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Examples' . DIRECTORY_SEPARATOR . 'configtest.yml');
         $this->assertNotNull($parsedConfigOK);
         $this->assertTrue(is_array($parsedConfigOK));
         $this->assertArrayHasKey('ConfigTest', $parsedConfigOK);
 
         //Create ConfigLoader instance and use this methods
         $config = ConfigLoader::getInstance();
-        $config->loadConfigFile(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'configtest.yml');
+        $config->loadConfigFile(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Examples' . DIRECTORY_SEPARATOR . 'configtest.yml');
         $this->assertNotNull($config);
         $this->assertInstanceOf('\CloudFramework\Core\ConfigLoader', $config, '$config isn\'t a ConfigLoader instance');
 

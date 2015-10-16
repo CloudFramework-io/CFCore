@@ -14,7 +14,7 @@ spl_autoload_register(function($class) {
         if (file_exists($classPath)) {
             require_once $classPath;
         } else {
-            throw new ErrorException("Class '{$class}' not found", 500, 10);
+            throw new ErrorException("Class '{$class}' not found in '{$classPath}'", 500, 10);
         }
     }
 
