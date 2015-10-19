@@ -1,5 +1,6 @@
 <?php
 namespace CloudFramework\Helpers;
+use CloudFramework\Patterns\Schemas\SingletonInterface;
 
 /**
  * Class SingletonTrait
@@ -45,19 +46,41 @@ Trait SingletonTrait {
      * @param string $class
      * @param float $ts
      * @param array $args
-     * @return object
+     * @return \CloudFramework\Patterns\Schemas\SingletonInterface
      */
-    private static function instanceClass($class, $ts, $args = array())
+    private static function instanceClass($class, $ts, array $args = array())
     {
-        $reflectionClass = (new \ReflectionClass($class));
+        $reflectionClass = new \ReflectionClass($class);
+        /** @var \CloudFramework\Patterns\Schemas\SingletonInterface $instanceClass */
         if (null !== $reflectionClass->getConstructor() && $reflectionClass->getConstructor()->getNumberOfParameters() > 0) {
             $instanceClass = $reflectionClass->newInstanceArgs($args);
         } else {
             $instanceClass = $reflectionClass->newInstance();
         }
-        $instanceClass->init($ts);
+        self::initializeInstance($ts, $reflectionClass, $instanceClass);
         unset($reflectionClass);
         return $instanceClass;
+    }
+
+    /**
+     * Initialize instance with pre-conditions and post-conditions
+     * @param float $ts
+     * @param \ReflectionClass $reflectionClass
+     * @param \CloudFramework\Patterns\Schemas\SingletonInterface $instanceClass
+     */
+    private static function initializeInstance($ts, \ReflectionClass $reflectionClass, SingletonInterface $instanceClass)
+    {
+        try {
+            $reflectionClass->getMethod('preInit')->invoke($instanceClass);
+        } catch (\Exception $e) {
+            //Do nothing
+        }
+        $instanceClass->init($ts);
+        try {
+            $reflectionClass->getMethod('postInit')->invoke($instanceClass);
+        } catch (\Exception $e) {
+            //Do nothing
+        }
     }
 
     /**
@@ -66,7 +89,7 @@ Trait SingletonTrait {
      * @param float $mem
      * @return $this
      */
-    public function computePreformance($ts, $mem)
+    public function computePerformance($ts, $mem)
     {
         $this->loadMem = round((memory_get_usage() - $mem) / (1024 * 1024), 4);
         $this->loadTs = round(microtime(true) - $ts, 5);
@@ -76,8 +99,5 @@ Trait SingletonTrait {
     /**
      * Inizialization method
      */
-    public function init()
-    {
-
-    }
+    public function init() {}
 }

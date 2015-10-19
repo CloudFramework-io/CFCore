@@ -6,7 +6,6 @@ use CloudFramework\Patterns\Singleton;
 
 class RequestParser extends Singleton
 {
-    use MagicClass;
     /**
      * Query string params
      * @var array $query
@@ -18,20 +17,16 @@ class RequestParser extends Singleton
      */
     private $data = array();
     /**
-     * Upload files
-     * @var array $files
-     */
-    private $uploads = array();
-    /**
      * Request headers
      * @var array $headers
      */
     private $headers = array();
 
-    public function init()
+    public function postInit()
     {
-        parent::init();
-        $this->catchRequestHeaders();
+        $this->catchRequestHeaders()
+            ->catchQueryString()
+            ->catchRawData();
     }
 
     /**
@@ -50,8 +45,10 @@ class RequestParser extends Singleton
      */
     private function catchRequestHeaders()
     {
-        foreach(getallheaders() as $key => $value) {
-            $this->headers[strtolower($key)] = $value;
+        if(function_exists("getallheaders")) {
+            foreach (getallheaders() as $key => $value) {
+                $this->headers[strtolower($key)] = $value;
+            }
         }
         return $this;
     }
@@ -62,12 +59,50 @@ class RequestParser extends Singleton
      */
     private function catchRawData()
     {
-        $rawData = json_file_get_contents('php://input');
+        $rawData = file_get_contents('php://input');
         $data = json_decode($rawData, JSON_UNESCAPED_UNICODE);
-        if(null === $data) {
-            $data = parse_str($rawData);
+        if (null === $data) {
+            parse_str($rawData, $data);
         }
         $this->data = $data;
         return $this;
+    }
+
+    /**
+     * Catch query string data
+     * @return RequestParser
+     */
+    private function catchQueryString()
+    {
+        parse_str($_SERVER['QUERY_STRING'], $this->query);
+        return $this;
+    }
+
+    /**
+     * Get $_SERVER value
+     * @param string $key
+     * @return null|mixed
+     */
+    public function getServerKey($key)
+    {
+        $value = null;
+        if (array_key_exists($key, $_SERVER)) {
+            $value = $_SERVER[$key];
+        }
+        return $value;
+    }
+
+    /**
+     * Get $_FILES value
+     * @param string $key
+     * @return array
+     */
+    public function getUploadedFile($key)
+    {
+        $file = array();
+        if (array_key_exists($key, $_FILES)) {
+            $file = $_FILES[$key];
+        }
+        return $file;
     }
 }

@@ -1,11 +1,13 @@
 <?php
 namespace CloudFrameworkTest\Patterns;
+require_once __DIR__ . '/../../src/autoload.php';
+
 
 use CloudFramework\Helpers\SingletonTrait;
-use CloudFrameworkTest\Core\CloudFrameworkTest;
+use CloudFramework\Patterns\Schemas\SingletonInterface;
 use CloudFrameworkTest\Examples\SimpleClass;
 
-class SingletonTest extends \PHPUnit_Framework_TestCase
+class SingletonTest extends \PHPUnit_Framework_TestCase implements SingletonInterface
 {
     use SingletonTrait;
     /**
@@ -47,7 +49,7 @@ class SingletonTest extends \PHPUnit_Framework_TestCase
     public function testAutowireInyection()
     {
         /** @var \CloudFrameworkTest\Examples\InyectTest $testClass */
-        $testClass = $this->testInstanceCreation('CloudFrameworkTest\Examples\InyectTest');
+        $testClass = $this->testInstanceCreation('\CloudFrameworkTest\Examples\InyectTest');
 
         $this->assertNotNull($testClass->config);
         $this->assertInstanceOf('\CloudFramework\Core\ConfigLoader', $testClass->config);

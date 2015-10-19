@@ -4,17 +4,21 @@
  * Cloud Framework Autoloader 1.0
  */
 spl_autoload_register(function($class) {
-    /**
-     * @param $class
-     * @param $classPath
-     * @throws ErrorException
-     */
-    function loadClass($class, $classPath)
-    {
-        if (file_exists($classPath)) {
-            require_once $classPath;
-        } else {
-            throw new ErrorException("Class '{$class}' not found in '{$classPath}'", 500, 10);
+
+    if(!function_exists("loadClass")) {
+        /**
+         * Class Loader
+         * @param string $class
+         * @param string $classPath
+         * @throws ErrorException
+         */
+        function loadClass($class, $classPath)
+        {
+            if (file_exists($classPath)) {
+                require_once $classPath;
+            } else {
+                throw new ErrorException("Class '{$class}' not found in '{$classPath}'", 500, 10);
+            }
         }
     }
 

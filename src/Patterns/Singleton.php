@@ -24,6 +24,20 @@ class Singleton implements SingletonInterface
     }
 
     /**
+     * Execution of pre conditions before initialization of class
+     */
+    public function preInit()
+    {
+    }
+
+    /**
+     * Execution of post conditions after initialization of class
+     */
+    public function postInit()
+    {
+    }
+
+    /**
      * Returns if class is already loaded
      * @return bool
      */
@@ -74,7 +88,7 @@ class Singleton implements SingletonInterface
                 $this->$variable = $instance;
             }
         } catch (\Exception $e) {
-            Logger::getInstance()->errorLog($e->getMessage());
+            //
         }
         return $this;
     }
@@ -98,7 +112,7 @@ class Singleton implements SingletonInterface
             }
             $this->setLoaded();
         }
-        return $this->computePreformance($ts, $mem);
+        return $this->computePerformance($ts, $mem);
     }
 
     /**
@@ -138,12 +152,31 @@ class Singleton implements SingletonInterface
         $reflector = new \ReflectionClass($calledClass);
         $property = $reflector->getProperty($variable);
         $varInstanceType = (null === $classNameSpace) ? Annotation::extractVarType($property->getDocComment()) : $classNameSpace;
-        $instance = null;
-        if (true === $singleton && (method_exists($varInstanceType, "getInstance") || method_exists($varInstanceType, "create"))) {
-            /** @var \CloudFramework\Patterns\Schemas\SingletonInterface $varInstanceType */
-            $instance = $varInstanceType::getInstance();
-        } else {
-            $instance = new $varInstanceType();
+        return $this->inyectInstance($singleton, $varInstanceType);
+    }
+
+    /**
+     * Create an object instance
+     * @param bool $singleton
+     * @param string $instanceType
+     * @return null|Object
+     */
+    private function inyectInstance($singleton, $instanceType)
+    {
+        try {
+            $instanceReflector = new \ReflectionClass($instanceType);
+            try {
+                if ($singleton) {
+                    $instance = $instanceReflector->getMethod("getInstance")->invoke(null);
+                }
+            } catch(\Exception $e) {
+                $singleton = false;
+            }
+            if (!$singleton) {
+                $instance = $instanceReflector->newInstance();
+            }
+        } catch (\Exception $e) {
+            $instance = null;
         }
         return $instance;
     }
