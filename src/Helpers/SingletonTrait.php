@@ -12,11 +12,11 @@ Trait SingletonTrait {
     /**
      * @var float $loadTs
      */
-    private $loadTs = 0;
+    protected $loadTs = 0;
     /**
      * @var float $loadMem
      */
-    private $loadMem = 0;
+    protected $loadMem = 0;
 
     /**
      * Singleton instance generator
@@ -51,12 +51,8 @@ Trait SingletonTrait {
     private static function instanceClass($class, $ts, array $args = array())
     {
         $reflectionClass = new \ReflectionClass($class);
-        /** @var \CloudFramework\Patterns\Schemas\SingletonInterface $instanceClass */
-        if (null !== $reflectionClass->getConstructor() && $reflectionClass->getConstructor()->getNumberOfParameters() > 0) {
-            $instanceClass = $reflectionClass->newInstanceArgs($args);
-        } else {
-            $instanceClass = $reflectionClass->newInstance();
-        }
+        $instanceClass = self::intance($args, $reflectionClass);
+
         self::initializeInstance($ts, $reflectionClass, $instanceClass);
         unset($reflectionClass);
         return $instanceClass;
@@ -81,6 +77,24 @@ Trait SingletonTrait {
         } catch (\Exception $e) {
             //Do nothing
         }
+    }
+
+    /**
+     * Create an instance of SingletonInterface
+     * @param array $args
+     * @param \ReflectionClass $reflectionClass
+     * @return SingletonInterface
+     */
+    private static function intance(array $args, $reflectionClass)
+    {
+        $instanceClass = null;
+        /** @var \CloudFramework\Patterns\Schemas\SingletonInterface $instanceClass */
+        if (null !== $reflectionClass->getConstructor() && $reflectionClass->getConstructor()->getNumberOfParameters() > 0) {
+            $instanceClass = $reflectionClass->newInstanceArgs($args);
+        } else {
+            $instanceClass = $reflectionClass->newInstance();
+        }
+        return $instanceClass;
     }
 
     /**
