@@ -30,9 +30,11 @@ Trait MagicClass {
      * Prevent the instance from being cloned
      * @return void
      */
-    private function __clone()
-    {
-        //TODO implement clone solution
-    }
+    private function __clone() {}
 
+    public function __toString()
+    {
+        $size = round(strlen(print_r($this, true)) / 1024, 4);
+        return get_class($this) . " " . $size . " Kbytes";
+    }
 }

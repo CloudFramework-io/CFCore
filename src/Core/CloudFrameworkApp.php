@@ -32,6 +32,6 @@ class CloudFrameworkApp extends CFClass
 
     public function run()
     {
-        $this->debugText(print_r($this, true));
+        $this->debugText($this . "\n" . $this->config . "\n" . $this->request);
     }
 }

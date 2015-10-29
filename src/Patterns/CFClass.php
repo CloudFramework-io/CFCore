@@ -15,8 +15,4 @@ abstract class CFClass extends Singleton
 
     }
 
-    public function dumpInstance()
-    {
-        return print_r($this, true);
-    }
 }

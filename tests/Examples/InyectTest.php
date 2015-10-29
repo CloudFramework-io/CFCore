@@ -20,4 +20,13 @@ class InyectTest extends Singleton
      * @var \CloudFrameworkTest\Examples\SimpleClass $testClass
      */
     protected $testClass;
+
+    /**
+     * Setter test for TestClass
+     * @param SimpleClass $simpleClass
+     */
+    public function setTestClass(SimpleClass $simpleClass)
+    {
+        $this->testClass = $simpleClass;
+    }
 }

@@ -60,16 +60,6 @@ class Singleton implements SingletonInterface
      */
 
     /**
-     * Extract short name from class namespace
-     * @return string
-     */
-    public function getShortName()
-    {
-        $reflector = new \ReflectionClass(get_class($this));
-        return $reflector->getShortName();
-    }
-
-    /**
      * Depedency injection service
      * @param string $variable
      * @param bool $singleton
@@ -88,7 +78,7 @@ class Singleton implements SingletonInterface
                 $this->$variable = $instance;
             }
         } catch (\Exception $e) {
-            //
+            //TODO implements logger interface
         }
         return $this;
     }
@@ -152,7 +142,7 @@ class Singleton implements SingletonInterface
         $reflector = new \ReflectionClass($calledClass);
         $property = $reflector->getProperty($variable);
         $varInstanceType = (null === $classNameSpace) ? Annotation::extractVarType($property->getDocComment()) : $classNameSpace;
-        return $this->inyectInstance($singleton, $varInstanceType);
+        return $this->injectInstance($singleton, $varInstanceType);
     }
 
     /**
@@ -161,8 +151,9 @@ class Singleton implements SingletonInterface
      * @param string $instanceType
      * @return null|Object
      */
-    private function inyectInstance($singleton, $instanceType)
+    private function injectInstance($singleton, $instanceType)
     {
+        $instance = null;
         try {
             $instanceReflector = new \ReflectionClass($instanceType);
             try {
@@ -176,7 +167,7 @@ class Singleton implements SingletonInterface
                 $instance = $instanceReflector->newInstance();
             }
         } catch (\Exception $e) {
-            $instance = null;
+            //TODO implements logger interface
         }
         return $instance;
     }
