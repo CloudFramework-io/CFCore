@@ -1,15 +1,16 @@
 <?php
 namespace CloudFramework\Core;
 
+use CloudFramework\Helpers\Response;
+use CloudFramework\Patterns\CFClass;
+
 /**
  * Class CloudFramework
  * @package CloudFramework\Core
  */
-class CloudFrameworkApp extends Singleton
+class CloudFrameworkApp extends CFClass
 {
-    /**
-     * @var string
-     */
+    use Response;
     private $app_name;
 
     /**
@@ -26,12 +27,11 @@ class CloudFrameworkApp extends Singleton
     public function __construct($name = 'CloudFramework', $configFile = '')
     {
         $this->app_name = $name;
-        //$this->config = ConfigLoader::getInstance($configFile);
+        $this->config = ConfigLoader::getInstance($configFile);
     }
 
     public function run()
     {
-        //$this->debugText($this . "\n" . $this->config . "\n" . $this->request);
-        echo "Hello";
+        $this->debugText($this . "\n" . $this->config . "\n" . $this->request);
     }
 }
