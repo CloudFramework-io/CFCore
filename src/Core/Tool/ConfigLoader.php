@@ -1,5 +1,5 @@
 <?php
-namespace CloudFramework\Core;
+namespace CloudFramework\Core\Tool;
 
 use CloudFramework\Exceptions\LoaderException;
 use CloudFramework\Patterns\CFClass;

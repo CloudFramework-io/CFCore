@@ -52,7 +52,7 @@ class SingletonTest extends \PHPUnit_Framework_TestCase implements SingletonInte
         $testClass = $this->testInstanceCreation('\CloudFrameworkTest\Examples\InyectTest');
 
         $this->assertNotNull($testClass->config);
-        $this->assertInstanceOf('\CloudFramework\Core\ConfigLoader', $testClass->config);
+        $this->assertInstanceOf('\CloudFramework\Core\Tool\ConfigLoader', $testClass->config);
 
         $this->assertNotNull($testClass->testClass);
         $this->assertInstanceOf('\CloudFrameworkTest\Examples\SimpleClass', $testClass->testClass);

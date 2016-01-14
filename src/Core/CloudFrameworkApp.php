@@ -1,5 +1,8 @@
 <?php
 namespace CloudFramework\Core;
+use CloudFramework\Core\Tool\RequestParser;
+use CloudFramework\Helpers\Response;
+use CloudFramework\Patterns\Singleton;
 
 /**
  * Class CloudFramework
@@ -7,31 +10,31 @@ namespace CloudFramework\Core;
  */
 class CloudFrameworkApp extends Singleton
 {
+    use Response;
+
     /**
      * @var string
      */
     private $app_name;
 
     /**
-     * @var \CloudFramework\Core\ConfigLoader $config
+     * @var \CloudFramework\Core\Tool\ConfigLoader $config
      */
     protected $config;
 
     /**
      * @Autowired
-     * @var \CloudFramework\Core\RequestParser $request
+     * @var \CloudFramework\Core\Tool\RequestParser $request
      */
     protected $request;
 
     public function __construct($name = 'CloudFramework', $configFile = '')
     {
         $this->app_name = $name;
-        //$this->config = ConfigLoader::getInstance($configFile);
     }
 
     public function run()
     {
-        //$this->debugText($this . "\n" . $this->config . "\n" . $this->request);
-        echo "Hello";
+        echo "Hello " . RequestParser::getQueryParam('name');
     }
 }

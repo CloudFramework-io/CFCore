@@ -1,18 +1,19 @@
 <?php
 namespace CloudFramework\Patterns;
 
+use CloudFramework\Core\CloudFrameworkApp;
 /**
  * Class CFClass
  * @package CloudFramework\Patterns
  */
 abstract class CFClass extends Singleton
 {
+    private $app;
 
-    public function dumpClassFile()
+    public function __construct()
     {
-        $reflection = new \ReflectionClass($this);
-        return htmlspecialchars(file_get_contents($reflection->getFileName()));
-
+        $this->app = CloudFrameworkApp::getInstance();
     }
+
 
 }

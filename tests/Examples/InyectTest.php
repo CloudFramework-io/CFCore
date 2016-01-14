@@ -11,7 +11,7 @@ class InyectTest extends Singleton
 {
     /**
      * @Autowired
-     * @var \CloudFramework\Core\ConfigLoader $config
+     * @var \CloudFramework\Core\Tool\ConfigLoader $config
      */
     protected $config;
 

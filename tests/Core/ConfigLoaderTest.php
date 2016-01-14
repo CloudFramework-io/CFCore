@@ -1,7 +1,7 @@
 <?php
 namespace CloudFrameworkTest\Core;
 
-use CloudFramework\Core\ConfigLoader;
+use CloudFramework\Core\Tool\ConfigLoader;
 use CloudFrameworkTest\Patterns\SingletonTest;
 
 class ConfigLoaderTest extends \PHPUnit_Framework_TestCase
@@ -17,12 +17,12 @@ class ConfigLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateInstance()
     {
-        return $this->singletonTest->testInstanceCreation('\CloudFramework\Core\ConfigLoader');
+        return $this->singletonTest->testInstanceCreation('\CloudFramework\Core\Tool\ConfigLoader');
     }
 
     public function testInstanceCreation()
     {
-        $this->singletonTest->checkSingletonInstance('\CloudFramework\Core\ConfigLoader');
+        $this->singletonTest->checkSingletonInstance('\CloudFramework\Core\Tool\ConfigLoader');
     }
 
     public function testLoadConfig()
@@ -41,7 +41,7 @@ class ConfigLoaderTest extends \PHPUnit_Framework_TestCase
         $config = ConfigLoader::getInstance();
         $config->loadConfigFile(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Examples' . DIRECTORY_SEPARATOR . 'configtest.yml');
         $this->assertNotNull($config);
-        $this->assertInstanceOf('\CloudFramework\Core\ConfigLoader', $config, '$config isn\'t a ConfigLoader instance');
+        $this->assertInstanceOf('\CloudFramework\Core\Tool\ConfigLoader', $config, '$config isn\'t a ConfigLoader instance');
 
         //Get a child config value
         $testValue = $config->getConfigParam('ConfigTest.Field2.Timestamp');
