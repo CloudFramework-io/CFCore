@@ -1,16 +1,14 @@
 <?php
-namespace CloudFramework\Core\Tool;
+namespace CloudFramework\Tool;
 
 use CloudFramework\Exceptions\LoaderException;
-use CloudFramework\Patterns\CFClass;
-use Symfony\Component\Yaml\Exception\ParseException;
-use Symfony\Component\Yaml\Yaml;
+use CloudFramework\Patterns\Singleton;
 
 /**
  * Class ConfigLoader
  * @package CloudFramework\Core
  */
-class ConfigLoader extends CFClass
+class ConfigLoader extends Singleton
 {
     private $config = array();
 
@@ -18,23 +16,6 @@ class ConfigLoader extends CFClass
     {
         parent::__construct();
         $this->loadConfigFile($configFilename);
-    }
-
-    /**
-     * Parser YAML configuration file
-     * @param string $filename
-     * @return array
-     * @throws \Symfony\Component\Yaml\Exception\ParseException If the YAML is not valid
-     */
-    public static function parseYamlConfigFile($filename = null)
-    {
-        try {
-            return Yaml::parse(file_get_contents($filename));
-        } catch (ParseException $p) {
-            throw $p;
-        } catch (\Exception $e) {
-            return null;
-        }
     }
 
     /**
@@ -47,20 +28,7 @@ class ConfigLoader extends CFClass
         return (false !== @mkdir($directory));
     }
 
-    /**
-     * Save configuration to file
-     * @param string $filename
-     * @return bool
-     * @throws \CloudFramework\Exceptions\LoaderException
-     */
-    public function saveConfigFile($filename)
-    {
-        $config = Yaml::dump($this->config);
-        if (false === ConfigLoader::createDir(dirname($filename)) || false === @file_put_contents($filename, $config)) {
-            throw new LoaderException('Can not save configuration to ' . $filename);
-        }
-        return true;
-    }
+
 
     /**
      * Search config key and returns this value
@@ -104,7 +72,7 @@ class ConfigLoader extends CFClass
      * Set a config parameter
      * @param string $key
      * @param mixed $value
-     * @return \CloudFramework\Core\ConfigLoader
+     * @return \CloudFramework\ConfigLoader
      */
     public function setConfigParam($key, $value = null)
     {
@@ -146,12 +114,11 @@ class ConfigLoader extends CFClass
      * Reload config file
      * @param $configFilename
      * @throws \Exception
-     * @throws \ParseException
      */
     public function loadConfigFile($configFilename = '')
     {
         if (strlen($configFilename) > 0 && file_exists($configFilename)) {
-            $this->config = ConfigLoader::parseYamlConfigFile($configFilename);
+            $this->config = array();
         }
     }
 }

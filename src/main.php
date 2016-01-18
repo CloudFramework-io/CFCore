@@ -2,5 +2,5 @@
 
 require_once 'autoload.php';
 
-$app = \CloudFramework\Core\CloudFrameworkApp::getInstance('cloud-framework', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'app.yaml');
+$app = \CloudFramework\CloudFrameworkApp::getInstance('cloud-framework', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'app.yaml');
 $app->run();

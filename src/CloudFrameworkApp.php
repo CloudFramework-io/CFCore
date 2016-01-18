@@ -1,7 +1,6 @@
 <?php
-namespace CloudFramework\Core;
-use CloudFramework\Core\Tool\RequestParser;
-use CloudFramework\Helpers\Response;
+namespace CloudFramework;
+use CloudFramework\Tool\RequestParser;
 use CloudFramework\Patterns\Singleton;
 
 /**
@@ -10,7 +9,6 @@ use CloudFramework\Patterns\Singleton;
  */
 class CloudFrameworkApp extends Singleton
 {
-    use Response;
 
     /**
      * @var string
@@ -18,15 +16,10 @@ class CloudFrameworkApp extends Singleton
     private $app_name;
 
     /**
-     * @var \CloudFramework\Core\Tool\ConfigLoader $config
+     * @var \CloudFramework\Tool\ConfigLoader $config
      */
     protected $config;
 
-    /**
-     * @Autowired
-     * @var \CloudFramework\Core\Tool\RequestParser $request
-     */
-    protected $request;
 
     public function __construct($name = 'CloudFramework', $configFile = '')
     {

@@ -1,19 +1,24 @@
 <?php
 namespace CloudFramework\Patterns;
 
-use CloudFramework\Annotations\Autowired;
-use CloudFramework\Helpers\MagicClass;
-use CloudFramework\Helpers\SingletonTrait;
-use CloudFramework\Patterns\Schemas\SingletonInterface;
 
 /**
  * Class Singleton
  * @package CloudFramework\Patterns
  */
-class Singleton implements SingletonInterface
+class Singleton
 {
-    use SingletonTrait;
-    use MagicClass;
+
+    private static $instance = array();
+    /**
+     * @var float $loadTs
+     */
+    protected $loadTs = 0;
+    /**
+     * @var float $loadMem
+     */
+    protected $loadMem = 0;
+
     /**
      * @var bool Flag thath indicates that actual class is already loaded
      */
@@ -24,151 +29,57 @@ class Singleton implements SingletonInterface
     }
 
     /**
-     * Execution of pre conditions before initialization of class
-     */
-    public function preInit()
-    {
-    }
-
-    /**
-     * Execution of post conditions after initialization of class
-     */
-    public function postInit()
-    {
-    }
-
-    /**
-     * Returns if class is already loaded
-     * @return bool
-     */
-    public function isLoaded()
-    {
-        return $this->loaded;
-    }
-
-    /**
-     * Set class is loaded or not
-     * @param bool $loaded
-     */
-    public function setLoaded($loaded = true)
-    {
-        $this->loaded = $loaded;
-    }
-
-    /**
-     * HELPERS
-     */
-
-    /**
-     * Depedency injection service
-     * @param string $variable
-     * @param bool $singleton
-     * @param string $classNameSpace
+     * Singleton instance generator
      * @return $this
      */
-    public function load($variable, $singleton = true, $classNameSpace = null)
+    public static function getInstance()
     {
-        $calledClass = get_called_class();
-        try {
-            $instance = $this->constructInyectableInstance($variable, $singleton, $classNameSpace, $calledClass);
-            $setter = "set" . ucfirst($variable);
-            if (method_exists($calledClass, $setter)) {
-                $this->$setter($instance);
-            } else {
-                $this->$variable = $instance;
-            }
-        } catch (\Exception $e) {
-            //TODO implements logger interface
+        $ts = microtime(true);
+        $class = get_called_class();
+        if (!array_key_exists($class, self::$instance) || null === self::$instance[$class]) {
+            self::$instance[$class] = new $class(func_get_args());
         }
-        return $this;
+        return self::$instance[$class];
     }
 
     /**
-     * Creation method that inject dependencies classes into instance class
-     * @param float $ts
+     * Instance generator alias
      * @return $this
      */
-    public function init($ts = null)
+    public static function create()
     {
-        $mem = memory_get_usage();
-        $ts = (null !== $ts) ? $ts : microtime(true);
-        if (!$this->isLoaded()) {
-            $properties = $this->getClassProperties();
-            /** @var \ReflectionProperty $property */
-            if (!empty($properties) && is_array($properties)) {
-                foreach ($properties as $property => $class) {
-                    $this->load($property, true, $class);
-                }
-            }
-            $this->setLoaded();
-        }
-        return $this->computePerformance($ts, $mem);
+        return self::getInstance(func_get_args());
     }
 
     /**
-     * Extract the class inyectables properties
-     * @param string $class
-     * @return array
-     */
-    private function getClassProperties($class = null)
-    {
-        $properties = array();
-        if (null === $class) {
-            $class = get_class($this);
-        }
-        $selfReflector = new \ReflectionClass($class);
-        if (false !== $selfReflector->getParentClass()) {
-            $properties = $this->getClassProperties($selfReflector->getParentClass()->getName());
-        }
-        foreach ($selfReflector->getProperties(\ReflectionProperty::IS_PROTECTED) as $property) {
-            $doc = $property->getDocComment();
-            $propertyName = $property->getName();
-            $properties = Autowired::create()->parse($propertyName, $doc, $properties);
-        }
-        return $properties;
-    }
-
-    /**
-     * Create instance of class properties
+     * Magic setter
      * @param string $variable
-     * @param bool $singleton
-     * @param string $classNameSpace
-     * @param string $calledClass
+     * @param mixed $value
+     */
+    public function __set($variable, $value)
+    {
+        $this->$variable = $value;
+    }
+
+    /**
+     * Magic getter
+     * @param string $variable
      * @return mixed
-     * @throws \Exception
      */
-    private function constructInyectableInstance($variable, $singleton, $classNameSpace, $calledClass)
+    public function __get($variable)
     {
-        $reflector = new \ReflectionClass($calledClass);
-        $property = $reflector->getProperty($variable);
-        $varInstanceType = (null === $classNameSpace) ? Annotation::extractVarType($property->getDocComment()) : $classNameSpace;
-        return $this->injectInstance($singleton, $varInstanceType);
+        return $this->$variable;
     }
 
     /**
-     * Create an object instance
-     * @param bool $singleton
-     * @param string $instanceType
-     * @return null|Object
+     * Prevent the instance from being cloned
+     * @return void
      */
-    private function injectInstance($singleton, $instanceType)
+    private function __clone() {}
+
+    public function __toString()
     {
-        $instance = null;
-        try {
-            $instanceReflector = new \ReflectionClass($instanceType);
-            try {
-                if ($singleton) {
-                    $instance = $instanceReflector->getMethod("getInstance")->invoke(null);
-                }
-            } catch(\Exception $e) {
-                $singleton = false;
-            }
-            if (!$singleton) {
-                $instance = $instanceReflector->newInstance();
-            }
-        } catch (\Exception $e) {
-            //TODO implements logger interface
-        }
-        return $instance;
+        $size = round(strlen(print_r($this, true)) / 1024, 4);
+        return get_class($this) . " " . $size . " Kbytes";
     }
 }

@@ -1,8 +1,5 @@
 <?php
-namespace CloudFramework\Core\Tool;
-
-use CloudFramework\Helpers\MagicClass;
-use CloudFramework\Patterns\Singleton;
+namespace CloudFramework\Tool;
 
 final class RequestParser
 {
@@ -34,7 +31,7 @@ final class RequestParser
             if (null === $data) {
                 parse_str($rawData, $data);
             }
-        } catch (\Throwable $t) {
+        } catch (\Exception $t) {
             syslog(LOG_ERR, $t->getMessage());
         }
         $data = array_merge($data, $_POST);
@@ -50,7 +47,7 @@ final class RequestParser
         $query = array();
         try {
             parse_str($_SERVER['QUERY_STRING'], $query);
-        } catch(\Throwable $t) {
+        } catch(\Exception $t) {
             syslog(LOG_ERR, $t->getMessage());
         }
         return $query;

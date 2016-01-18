@@ -1,8 +1,0 @@
-ConfigTest:
-  Field1:
-    - Array:
-        Animals: ['Lion', 'Cat', 'Dog', 'Bear']
-        People: []
-        Things: ['Cup', 'Table', 'Chair']
-  Field2:
-    Timestamp: '2015-10-01 00:00:00'
