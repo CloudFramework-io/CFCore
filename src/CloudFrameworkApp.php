@@ -1,5 +1,6 @@
 <?php
 namespace CloudFramework;
+use CloudFramework\Tool\ConfigLoader;
 use CloudFramework\Tool\RequestParser;
 use CloudFramework\Patterns\Singleton;
 
@@ -24,10 +25,11 @@ class CloudFrameworkApp extends Singleton
     public function __construct($name = 'CloudFramework', $configFile = '')
     {
         $this->app_name = $name;
+        $this->config = ConfigLoader::getInstance($configFile);
     }
 
     public function run()
     {
-        echo "Hello " . RequestParser::getQueryParam('name');
+        echo "Hello " . RequestParser::getQueryParam('name') . '<br>' . $this . "<pre>";
     }
 }

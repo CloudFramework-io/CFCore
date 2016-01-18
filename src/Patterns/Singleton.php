@@ -10,23 +10,6 @@ class Singleton
 {
 
     private static $instance = array();
-    /**
-     * @var float $loadTs
-     */
-    protected $loadTs = 0;
-    /**
-     * @var float $loadMem
-     */
-    protected $loadMem = 0;
-
-    /**
-     * @var bool Flag thath indicates that actual class is already loaded
-     */
-    protected $loaded = false;
-
-    public function __construct()
-    {
-    }
 
     /**
      * Singleton instance generator
@@ -34,10 +17,16 @@ class Singleton
      */
     public static function getInstance()
     {
-        $ts = microtime(true);
         $class = get_called_class();
         if (!array_key_exists($class, self::$instance) || null === self::$instance[$class]) {
-            self::$instance[$class] = new $class(func_get_args());
+            $reflectorClass = new \ReflectionClass($class);
+            try {
+                self::$instance[$class] = $reflectorClass->newInstanceArgs(func_get_args());
+            } catch(\Exception $e) {
+                syslog(LOG_ERR, $e->getMessage());
+            } finally {
+                unset($reflectorClass);
+            }
         }
         return self::$instance[$class];
     }
@@ -58,7 +47,9 @@ class Singleton
      */
     public function __set($variable, $value)
     {
-        $this->$variable = $value;
+        if (property_exists($this, $variable)) {
+            $this->$variable = $value;
+        }
     }
 
     /**
@@ -68,7 +59,11 @@ class Singleton
      */
     public function __get($variable)
     {
-        return $this->$variable;
+        if (property_exists($this, $variable)) {
+            return $this->$variable;
+        } else {
+            return null;
+        }
     }
 
     /**

@@ -1,124 +1,92 @@
 <?php
-namespace CloudFramework\Tool;
+    namespace CloudFramework\Tool;
 
-use CloudFramework\Exceptions\LoaderException;
-use CloudFramework\Patterns\Singleton;
-
-/**
- * Class ConfigLoader
- * @package CloudFramework\Core
- */
-class ConfigLoader extends Singleton
-{
-    private $config = array();
-
-    public function __construct($configFilename = '')
-    {
-        parent::__construct();
-        $this->loadConfigFile($configFilename);
-    }
+    use CloudFramework\Patterns\Singleton;
 
     /**
-     * Create directory
-     * @param string $directory
-     * @return bool
+     * Class ConfigLoader
+     * @package CloudFramework\Core
      */
-    public static function createDir($directory)
+    class ConfigLoader extends Singleton
     {
-        return (false !== @mkdir($directory));
-    }
+        private $config = array();
 
-
-
-    /**
-     * Search config key and returns this value
-     * @param string $key
-     * @param array $config
-     * @return mixed
-     */
-    public function getConfigParam($key, $config = array())
-    {
-        $config = (count($config) == 0) ? $this->config : $config;
-        $value = null;
-        if (count($config) > 0) {
-            $configKey = explode(".", trim($key));
-            $parentKey = reset($configKey);
-            $existsKeyInConfig = array_key_exists($parentKey, $config);
-            if (count($configKey) > 1 && $existsKeyInConfig) {
-                $value = $this->getConfigParam($this->getChildConfigKey($key), $config[$parentKey]);
-            } elseif ($existsKeyInConfig) {
-                $value = $config[$parentKey];
+        public function __construct($configFilename = '')
+        {
+            if (strlen($configFilename)) {
+                $this->loadConfigFile($configFilename);
             }
         }
-        return $value;
-    }
 
-    /**
-     * Extract child keys from parent config key
-     * @param string $key
-     * @return string
-     */
-    private function getChildConfigKey($key)
-    {
-        $childKey = '';
-        $dotPosition = strpos($key, '.');
-        if (false !== $dotPosition) {
-            $childKey = substr($key, $dotPosition + 1, strlen($key) - $dotPosition);
-        }
-        return $childKey;
-    }
-
-    /**
-     * Set a config parameter
-     * @param string $key
-     * @param mixed $value
-     * @return \CloudFramework\ConfigLoader
-     */
-    public function setConfigParam($key, $value = null)
-    {
-        $this->config = $this->setConfigValue($key, $value, $this->config);
-        return $this;
-    }
-
-    /**
-     * Recursive process that set a config value
-     * @param string $key
-     * @param mixed $value
-     * @param mixed $config
-     * @return array
-     */
-    private function setConfigValue($key, $value = null, $config = null)
-    {
-        $keys = explode('.', $key);
-        if (count($keys) === 0) {
-            $keys = array($key);
-        }
-        $keyCount = count($keys);
-        $aux = $config;
-        foreach ($keys as $_key) {
-            $keyCount--;
-            if (!array_key_exists($_key, $aux)) {
-                $aux[$_key] = array();
+        /**
+         * Search config key and returns this value
+         *
+         * @param string $key
+         *
+         * @return mixed
+         */
+        public function getConf($key)
+        {
+            $value = NULL;
+            if (count($this->config) > 0) {
+                if (array_key_exists($key, $this->config)) {
+                    $value = $this->config[$key];
+                }
             }
-            if ($keyCount > 0) {
-                $aux[$_key]  = $this->setConfigValue($this->getChildConfigKey($key), $value, $aux[$_key]);
-            } else {
-                $aux[$_key] = $value;
-            }
-            break;
+            return $value;
         }
-        return $aux;
-    }
 
-    /**
-     * Reload config file
-     * @param $configFilename
-     * @throws \Exception
-     */
-    public function loadConfigFile($configFilename = '')
-    {
-        if (strlen($configFilename) > 0 && file_exists($configFilename)) {
-            $this->config = array();
+        /**
+         * Set a config parameter
+         *
+         * @param string $key
+         * @param mixed $value
+         *
+         * @return \CloudFramework\Tool\ConfigLoader
+         */
+        public function setConf($key, $value = NULL)
+        {
+            $this->config[$key] = $value;
+            return $this;
+        }
+
+        /**
+         * Reload config file
+         *
+         * @param $configFilename
+         *
+         * @throws \Exception
+         */
+        public function loadConfigFile($configFilename = '')
+        {
+            if (0 > strlen($configFilename) && file_exists($configFilename)) {
+                $configs = json_decode(file_get_contents($configFilename), true);
+                $this->extractComposedConfigs($configs);
+            }
+        }
+
+        /**
+         * @param array|mixed $configs
+         * @param string $composedKey
+         * @param array $composedConfig
+         *
+         * @return \CloudFramework\Tool\ConfigLoader
+         */
+        protected function extractComposedConfigs($configs, $composedKey = '', &$composedConfig = array())
+        {
+            if (is_array($configs)) {
+                foreach ($configs as $key => $config) {
+                    $_key = strlen($composedKey) ? $composedKey . '.' . $key : $key;
+                    if (is_array($config)) {
+                        $this->extractComposedConfigs($config, $_key, $composedConfig);
+                    } else {
+                        $this->setConf($_key, $config);
+                    }
+                }
+            } elseif (strlen($composedKey)) {
+                $this->setConf($composedKey, $configs);
+            }
+
+            return $this;
         }
     }
-}
