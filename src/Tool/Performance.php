@@ -9,12 +9,9 @@ class Performance extends Singleton
 {
 
     var $data;
-    var $app;
 
     function __construct()
     {
-        $this->app = CloudFrameworkApp::getInstance();
-
         // Performance Vars
         $this->data['initMicrotime'] = microtime(TRUE);
         $this->data['lastMicrotime'] = $this->data['initMicrotime'];
