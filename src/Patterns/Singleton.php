@@ -24,8 +24,7 @@ class Singleton
                 self::$instance[$class] = $reflectorClass->newInstanceArgs(func_get_args());
             } catch(\Exception $e) {
                 syslog(LOG_ERR, $e->getMessage());
-            } finally {
-                unset($reflectorClass);
+                throw $e;
             }
         }
         return self::$instance[$class];
