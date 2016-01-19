@@ -1,6 +1,5 @@
 <?php
     namespace CloudFramework\Tool;
-
     use CloudFramework\Patterns\Singleton;
 
     /**
@@ -88,5 +87,9 @@
             }
 
             return $this;
+        }
+
+        public static function getConfParam($key) {
+            return self::getInstance()->getConf($key);
         }
     }

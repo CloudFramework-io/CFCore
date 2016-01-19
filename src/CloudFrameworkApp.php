@@ -2,6 +2,7 @@
 namespace CloudFramework;
 use CloudFramework\Tool\ConfigLoader;
 use CloudFramework\Tool\RequestParser;
+use CloudFramework\Tool\Performance;
 use CloudFramework\Patterns\Singleton;
 
 /**
@@ -21,15 +22,24 @@ class CloudFrameworkApp extends Singleton
      */
     protected $config;
 
+    /**
+     * @var \CloudFramework\Tool\Performance $performance
+     */
+    protected $perfomance;
 
     public function __construct($name = 'CloudFramework', $configFile = '')
     {
+        $this->performance = new Performance();
+
         $this->app_name = $name;
         $this->config = ConfigLoader::getInstance($configFile);
+
     }
 
     public function run()
     {
         echo "Hello " . RequestParser::getQueryParam('name') . '<br>' . $this . "<pre>";
+        $this->config->setConf('a','b');
+        echo $this->config->getConf('a').' '.ConfigLoader::getConfParam('a');
     }
 }
